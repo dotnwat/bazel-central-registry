@@ -1,7 +1,7 @@
 {
-    "url": "https://github.com/scylladb/seastar/archive/53615b6e541a05101d819b2a52146aa453e473e3.tar.gz",
+    "url": "https://github.com/scylladb/seastar/archive/ed9425389101d4527a776df0e856eed300c87bd5.tar.gz",
     "integrity": "sha256-oqXHvDL2tBBL0jGwC1PYdr0E3iTkNhDPT16wPfz3aRQ=",
-    "strip_prefix": "seastar-53615b6e541a05101d819b2a52146aa453e473e3",
+    "strip_prefix": "seastar-ed9425389101d4527a776df0e856eed300c87bd5",
     "overlay": {
         "BUILD.bazel": "sha256-H/dXVJWfyWiy/wUhVCxefy0H1dW8W7sHxrPCF8OcHnU="
     }
