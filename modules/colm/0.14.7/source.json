@@ -1,0 +1,10 @@
+{
+    "url": "https://www.colm.net/files/colm/colm-0.14.7.tar.gz",
+    "integrity": "sha256-YDezHDWN2m9YD3Mh+XoYIUSoQBxpC0WPyuBVxlUBl30=",
+    "strip_prefix": "colm-0.14.7",
+    "overlay": {
+        "BUILD.bazel": "sha256-fEFXIM4Xm1/3HJsl/k9VG0Zl0HZ7n13mZSYFgHP5B+A=",
+        "MODULE.bazel": "sha256-rn69HiFsHYAJyZl8g3ZPIQjc5KCglrCQAXCwKvQKuVg="
+    },
+    "patch_strip": 0
+}

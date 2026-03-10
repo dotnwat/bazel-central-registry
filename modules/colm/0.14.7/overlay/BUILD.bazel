@@ -1,0 +1,382 @@
+# =============================================================================
+# src/aapl: Header-only library for data structures (AVL trees, lists, etc.)
+# Headers are included as bare names: #include <avltree.h>
+# =============================================================================
+cc_library(
+    name = "aapl",
+    hdrs = glob(["src/aapl/*.h"]),
+    includes = ["src/aapl"],
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# src/libfsm: FSM construction and backend code generators
+# =============================================================================
+cc_library(
+    name = "libfsm",
+    srcs = [
+        "src/libfsm/actexp.cc",
+        "src/libfsm/actloop.cc",
+        "src/libfsm/allocgen.cc",
+        "src/libfsm/asm.cc",
+        "src/libfsm/binary.cc",
+        "src/libfsm/binbreak.cc",
+        "src/libfsm/bingoto.cc",
+        "src/libfsm/binvar.cc",
+        "src/libfsm/codegen.cc",
+        "src/libfsm/common.cc",
+        "src/libfsm/dot.cc",
+        "src/libfsm/flat.cc",
+        "src/libfsm/flatbreak.cc",
+        "src/libfsm/flatgoto.cc",
+        "src/libfsm/flatvar.cc",
+        "src/libfsm/fsmattach.cc",
+        "src/libfsm/fsmbase.cc",
+        "src/libfsm/fsmcond.cc",
+        "src/libfsm/fsmgraph.cc",
+        "src/libfsm/fsmmin.cc",
+        "src/libfsm/fsmnfa.cc",
+        "src/libfsm/fsmstate.cc",
+        "src/libfsm/fsmap.cc",
+        "src/libfsm/gendata.cc",
+        "src/libfsm/goto.cc",
+        "src/libfsm/gotoexp.cc",
+        "src/libfsm/gotoloop.cc",
+        "src/libfsm/idbase.cc",
+        "src/libfsm/ipgoto.cc",
+        "src/libfsm/redfsm.cc",
+        "src/libfsm/switch.cc",
+        "src/libfsm/switchbreak.cc",
+        "src/libfsm/switchgoto.cc",
+        "src/libfsm/switchvar.cc",
+        "src/libfsm/tables.cc",
+        "src/libfsm/tabbreak.cc",
+        "src/libfsm/tabgoto.cc",
+        "src/libfsm/tabvar.cc",
+    ] + glob(
+        ["src/libfsm/*.h"],
+        exclude = [
+            "src/libfsm/action.h",
+            "src/libfsm/asm.h",
+            "src/libfsm/common.h",
+            "src/libfsm/dot.h",
+            "src/libfsm/fsmgraph.h",
+            "src/libfsm/gendata.h",
+            "src/libfsm/ragel.h",
+            "src/libfsm/redfsm.h",
+        ],
+    ),
+    hdrs = [
+        "src/libfsm/action.h",
+        "src/libfsm/asm.h",
+        "src/libfsm/common.h",
+        "src/libfsm/dot.h",
+        "src/libfsm/fsmgraph.h",
+        "src/libfsm/gendata.h",
+        "src/libfsm/ragel.h",
+        "src/libfsm/redfsm.h",
+    ],
+    copts = [
+        "-Wall",
+        "-Isrc",
+    ],
+    include_prefix = "libfsm",
+    strip_include_prefix = "src/libfsm",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":aapl",
+        ":colm_hdrs",
+    ],
+)
+
+# =============================================================================
+# src/cgil: Colm grammar intermediate language files
+# =============================================================================
+filegroup(
+    name = "cgil",
+    srcs = glob(["src/cgil/*.lm"]),
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# Runtime headers installed as <colm/*.h>
+# =============================================================================
+_COLM_RUNTIME_HDRS = [
+    "src/bytecode.h",
+    "src/colm.h",
+    "src/colmex.h",
+    "src/config.h",
+    "src/debug.h",
+    "src/defs.h",
+    "src/input.h",
+    "src/internal.h",
+    "src/map.h",
+    "src/pdarun.h",
+    "src/pool.h",
+    "src/program.h",
+    "src/rtvector.h",
+    "src/struct.h",
+    "src/tree.h",
+    "src/type.h",
+]
+
+cc_library(
+    name = "colm_hdrs",
+    hdrs = _COLM_RUNTIME_HDRS,
+    include_prefix = "colm",
+    strip_include_prefix = "src",
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# libcolm: the runtime library
+# =============================================================================
+cc_library(
+    name = "libcolm",
+    srcs = [
+        "src/bytecode.c",
+        "src/codevect.c",
+        "src/commit.c",
+        "src/debug.c",
+        "src/input.c",
+        "src/iter.c",
+        "src/list.c",
+        "src/map.c",
+        "src/pdarun.c",
+        "src/pool.c",
+        "src/print.c",
+        "src/program.c",
+        "src/stream.c",
+        "src/string.c",
+        "src/struct.c",
+        "src/tree.c",
+    ],
+    hdrs = _COLM_RUNTIME_HDRS,
+    copts = ["-Wall"],
+    include_prefix = "colm",
+    strip_include_prefix = "src",
+    visibility = ["//visibility:public"],
+    deps = [":aapl"],
+)
+
+# =============================================================================
+# libprog: static library with compiler infrastructure
+# =============================================================================
+
+# Private headers shared by libprog and bootstrap/colm binaries.
+_PROG_HDRS = [
+    "src/buffer.h",
+    "src/compiler.h",
+    "src/cstring.h",
+    "src/dotgen.h",
+    "src/fsmcodegen.h",
+    "src/fsmgraph.h",
+    "src/global.h",
+    "src/keyops.h",
+    "src/parser.h",
+    "src/parsetree.h",
+    "src/pcheck.h",
+    "src/pdacodegen.h",
+    "src/pdagraph.h",
+    "src/redbuild.h",
+    "src/redfsm.h",
+    "src/rtvector.h",
+    "src/version.h",
+]
+
+_PROG_COPTS = [
+    "-Wall",
+    "-DPREFIX='\"\"'",
+    "-Isrc",
+    "-I$(GENDIR)/src",
+]
+
+_PROG_DEPS = [
+    ":aapl",
+    ":colm_hdrs",
+]
+
+cc_library(
+    name = "libprog",
+    srcs = [
+        "src/closure.cc",
+        "src/codegen.cc",
+        "src/compiler.cc",
+        "src/ctinput.cc",
+        "src/declare.cc",
+        "src/dotgen.cc",
+        "src/exports.cc",
+        "src/fsmap.cc",
+        "src/fsmattach.cc",
+        "src/fsmbase.cc",
+        "src/fsmcodegen.cc",
+        "src/fsmexec.cc",
+        "src/fsmgraph.cc",
+        "src/fsmmin.cc",
+        "src/fsmstate.cc",
+        "src/lookup.cc",
+        "src/parser.cc",
+        "src/parsetree.cc",
+        "src/pcheck.cc",
+        "src/pdabuild.cc",
+        "src/pdacodegen.cc",
+        "src/pdagraph.cc",
+        "src/redbuild.cc",
+        "src/redfsm.cc",
+        "src/reduce.cc",
+        "src/resolve.cc",
+        "src/synthesis.cc",
+    ] + _PROG_HDRS,
+    copts = _PROG_COPTS,
+    deps = _PROG_DEPS,
+)
+
+# loadfinal.cc is textually #included by loadcolm.cc and loadboot2.cc
+# (not compiled directly).
+cc_library(
+    name = "loadfinal_inc",
+    textual_hdrs = ["src/loadfinal.cc"],
+    hdrs = ["src/loadfinal.h"],
+    deps = [
+        ":aapl",
+        ":colm_hdrs",
+        ":libprog",
+    ],
+)
+
+# =============================================================================
+# Bootstrap chain: bootstrap0 -> bootstrap1 -> bootstrap2 -> colm
+#
+# Each stage generates parser sources for the next stage.
+# bootstrap0 uses internal constructors (no grammar file).
+# bootstrap1 parses a stripped-down colm syntax.
+# bootstrap2 parses the full colm grammar.
+# The final colm binary is built with the output of bootstrap2.
+# =============================================================================
+
+# --- Stage 0: bootstrap0 binary ---
+cc_binary(
+    name = "bootstrap0",
+    srcs = [
+        "src/consinit.cc",
+        "src/consinit.h",
+        "src/main.cc",
+    ] + _PROG_HDRS,
+    copts = _PROG_COPTS + ["-DCONS_INIT"],
+    deps = _PROG_DEPS + [
+        ":libcolm",
+        ":libprog",
+    ],
+)
+
+# --- Stage 0 -> 1: generate if1.h, if1.cc, parse1.c ---
+genrule(
+    name = "gen_bootstrap1",
+    srcs = [],
+    outs = [
+        "src/gen/if1.h",
+        "src/gen/if1.cc",
+        "src/gen/parse1.c",
+    ],
+    cmd = "$(execpath :bootstrap0) -c" +
+          " -e $(execpath src/gen/if1.h)" +
+          " -x $(execpath src/gen/if1.cc)" +
+          " -p $(execpath src/gen/parse1.c)" +
+          " no-input",
+    tools = [":bootstrap0"],
+)
+
+# --- Stage 1: bootstrap1 binary ---
+cc_binary(
+    name = "bootstrap1",
+    srcs = [
+        "src/loadinit.cc",
+        "src/loadinit.h",
+        "src/main.cc",
+        "src/gen/if1.h",
+        "src/gen/if1.cc",
+        "src/gen/parse1.c",
+    ] + _PROG_HDRS,
+    copts = _PROG_COPTS + ["-DLOAD_INIT"],
+    deps = _PROG_DEPS + [
+        ":libcolm",
+        ":libprog",
+    ],
+)
+
+# --- Stage 1 -> 2: generate if2.h, if2.cc, parse2.c ---
+genrule(
+    name = "gen_bootstrap2",
+    srcs = ["src/colm.lm"],
+    outs = [
+        "src/gen/if2.h",
+        "src/gen/if2.cc",
+        "src/gen/parse2.c",
+    ],
+    cmd = "$(execpath :bootstrap1) -c" +
+          " -e $(execpath src/gen/if2.h)" +
+          " -x $(execpath src/gen/if2.cc)" +
+          " -p $(execpath src/gen/parse2.c)" +
+          " $(execpath src/colm.lm)",
+    tools = [":bootstrap1"],
+)
+
+# --- Stage 2: bootstrap2 binary ---
+cc_binary(
+    name = "bootstrap2",
+    srcs = [
+        "src/loadboot2.cc",
+        "src/main.cc",
+        "src/gen/if2.h",
+        "src/gen/if2.cc",
+        "src/gen/parse2.c",
+    ] + _PROG_HDRS,
+    copts = _PROG_COPTS + ["-DLOAD_COLM"],
+    deps = _PROG_DEPS + [
+        ":libcolm",
+        ":libprog",
+        ":loadfinal_inc",
+    ],
+)
+
+# --- Stage 2 -> 3: generate if3.h, if3.cc, parse3.c ---
+genrule(
+    name = "gen_colm",
+    srcs = [
+        "src/prog.lm",
+        "src/colm.lm",
+    ],
+    outs = [
+        "src/gen/if3.h",
+        "src/gen/if3.cc",
+        "src/gen/parse3.c",
+    ],
+    # prog.lm does `include 'colm.lm'` which is resolved relative to cwd.
+    # Use -I to point at the directory containing colm.lm.
+    cmd = "$(execpath :bootstrap2) -c" +
+          " -I $$(dirname $(execpath src/colm.lm))" +
+          " -e $(execpath src/gen/if3.h)" +
+          " -x $(execpath src/gen/if3.cc)" +
+          " -p $(execpath src/gen/parse3.c)" +
+          " $(execpath src/prog.lm)",
+    tools = [":bootstrap2"],
+)
+
+# --- Final: colm compiler binary ---
+cc_binary(
+    name = "colm",
+    srcs = [
+        "src/main.cc",
+        "src/loadcolm.cc",
+        "src/gen/if3.h",
+        "src/gen/if3.cc",
+        "src/gen/parse3.c",
+    ],
+    copts = _PROG_COPTS + ["-DLOAD_COLM"],
+    visibility = ["//visibility:public"],
+    deps = _PROG_DEPS + [
+        ":libcolm",
+        ":libprog",
+        ":loadfinal_inc",
+    ],
+)
