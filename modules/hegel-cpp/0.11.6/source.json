@@ -1,0 +1,13 @@
+{
+    "url": "https://github.com/hegeldev/hegel-cpp/archive/refs/tags/v0.11.6.tar.gz",
+    "integrity": "sha256-L8BRFoqFEfcmwOMhJsmOewyBDjFzCxVxs5oLZ5GRCAo=",
+    "strip_prefix": "hegel-cpp-0.11.6",
+    "overlay": {
+        "MODULE.bazel": "sha256-X7bVM7bAlGPVxnZ/Gozc0GBOVQoKXgWa0KaZ5unxYK4=",
+        "BUILD.bazel": "sha256-uXAE/K3dQ99cFcpQHm8U82kbedRc0LF0aJU4S33Dsok=",
+        "libhegel/BUILD.bazel": "sha256-CxWl4cfVEeL6KRlV4Qp/oZueLiDvWCOxCsnFVsbqk4I=",
+        "libhegel/libhegel.bzl": "sha256-h7L7w2kWV526S9YqY3RKlkBO8wG8noxRhCPzLiSwNzU=",
+        "third_party/BUILD.bazel": "sha256-lsAEm/fJSMJ3o0DEl8fub1XRb7jQb1HR7+nrsBoP3FY=",
+        "third_party/reflectcpp.BUILD": "sha256-AqY3s6npBUX/pJUV6LZ6HIslkCOV4+4z+L/v/sBHVZw="
+    }
+}
